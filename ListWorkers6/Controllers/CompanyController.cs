@@ -56,10 +56,6 @@ namespace ListWorkers6.Controllers
 
             var result = company.Where(i => i.NameComapny.Contains(searchCompany)).ToList();
 
-            //var result = company.Where( i => i.IdCompany.Equals(searchCompany.IdCompany) 
-            //                        || i.NameComapny.ToLower().Contains(searchCompany.NameComapny)
-            //                        || i.DateCreation.Equals(searchCompany.DateCreation) );
-
             if (result == null)
             {
                 return BadRequest("Not a valid model");
