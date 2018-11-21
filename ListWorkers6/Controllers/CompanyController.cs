@@ -14,7 +14,7 @@ namespace ListWorkers6.Controllers
 
             using (var ctx = new ListWorkersEntities())
             {
-                company = ctx.Companies.Include("StudentAddress")
+                company = ctx.Companies.Include("Company")
                     .Select(s => new CompanyViewModel()
                     {
                         IdCompany = s.IdCompany,
@@ -31,6 +31,43 @@ namespace ListWorkers6.Controllers
             return Ok(company);
         }
 
+        // serach company
+        [HttpGet]
+        public IHttpActionResult SearchCompany(string searchCompany)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("Not a valid model");
+
+            if (searchCompany == null)
+                return BadRequest("Not a valid model");
+
+            IList<CompanyViewModel> company = new List<CompanyViewModel>();
+
+            using (var ctx = new ListWorkersEntities())
+            {
+                company = ctx.Companies.Include("Company")
+                    .Select(s => new CompanyViewModel()
+                    {
+                        IdCompany = s.IdCompany,
+                        NameComapny = s.NameComapny,
+                        DateCreation = s.DateCreation
+                    }).ToList<CompanyViewModel>();
+            }
+
+            var result = company.Where(i => i.NameComapny.Contains(searchCompany)).ToList();
+
+            //var result = company.Where( i => i.IdCompany.Equals(searchCompany.IdCompany) 
+            //                        || i.NameComapny.ToLower().Contains(searchCompany.NameComapny)
+            //                        || i.DateCreation.Equals(searchCompany.DateCreation) );
+
+            if (result == null)
+            {
+                return BadRequest("Not a valid model");
+            }
+
+            return Ok(result);
+        }
+
         //inset now company
         public IHttpActionResult PostNewcompany(CompanyViewModel company)
         {
@@ -41,7 +78,6 @@ namespace ListWorkers6.Controllers
             {
                 ctx.Companies.Add(new Company()
                 {
-                    //StudentID = company.IdCompany,
                     NameComapny = company.NameComapny,
                     DateCreation = company.DateCreation
                 });
